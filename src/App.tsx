@@ -1,37 +1,56 @@
-import { Layers, List } from 'lucide-react';
+import { Layers, List, Printer, LayoutGrid } from 'lucide-react';
 import { useStore, type Screen } from './store/useStore';
 import { ArticlesScreen } from './screens/ArticlesScreen';
 import { ArticleForm } from './screens/ArticleForm';
-import { ShelfScreen } from './screens/ShelfScreen';
+import { ShelvesScreen } from './screens/ShelvesScreen';
+import { PlanogramScreen } from './screens/PlanogramScreen';
+import { PrintScreen } from './screens/PrintScreen';
+import { useDevice } from './hooks';
 
-const TABS: { id: Screen; label: string; Icon: typeof List }[] = [
-  { id: 'shelf', label: 'Mon étagère', Icon: Layers },
-  { id: 'articles', label: 'Mes articles', Icon: List },
+const TABS: { id: Screen; n: string; label: string; Icon: typeof List }[] = [
+  { id: 'articles', n: '01', label: 'Articles', Icon: List },
+  { id: 'shelves', n: '02', label: 'Étagères', Icon: Layers },
+  { id: 'planogram', n: '03', label: 'Planogramme', Icon: LayoutGrid },
+  { id: 'print', n: '04', label: 'Impression', Icon: Printer },
 ];
 
 export function App() {
   const screen = useStore((s) => s.screen);
-  const setScreen = useStore((s) => s.setScreen);
+  const go = useStore((s) => s.go);
   const editing = useStore((s) => s.editing);
+  const { phone } = useDevice();
+  const current = screen === 'form' ? 'articles' : screen;
 
   return (
-    <div className="app">
+    <div className={'app' + (phone ? ' phone' : '')}>
       <header className="topbar no-print">
         <div className="brand">
           <strong>Étal</strong>
           <span>Épicerie du Marché · planogrammes</span>
         </div>
-        <nav className="tabs" aria-label="Navigation">
+        {!phone && (
+          <nav className="tabs" aria-label="Navigation">
+            {TABS.map(({ id, n, label }) => (
+              <button key={id} className="tab" aria-current={current === id ? 'page' : undefined} onClick={() => go(id)}>
+                <small>{n}</small> {label}
+              </button>
+            ))}
+          </nav>
+        )}
+      </header>
+      <main className="main">
+        {screen === 'form' ? <ArticleForm key={editing?.id ?? 'new'} /> : screen === 'articles' ? <ArticlesScreen /> : screen === 'shelves' ? <ShelvesScreen /> : screen === 'planogram' ? <PlanogramScreen /> : <PrintScreen />}
+      </main>
+      {phone && (
+        <nav className="bottom-nav no-print" aria-label="Navigation">
           {TABS.map(({ id, label, Icon }) => (
-            <button key={id} className="tab" aria-current={screen === id ? 'page' : undefined} onClick={() => setScreen(id)}>
-              <Icon size={22} aria-hidden /> {label}
+            <button key={id} aria-current={current === id ? 'page' : undefined} onClick={() => go(id)}>
+              <Icon size={22} aria-hidden />
+              <span>{label}</span>
             </button>
           ))}
         </nav>
-      </header>
-      <main className="main">
-        {editing ? <ArticleForm /> : screen === 'articles' ? <ArticlesScreen /> : <ShelfScreen />}
-      </main>
+      )}
     </div>
   );
 }

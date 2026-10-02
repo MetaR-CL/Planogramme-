@@ -1,9 +1,9 @@
 import type { Article, Shape } from './types';
-import { TEMPLATES } from './constants';
+import { TPL_SHAPE } from './constants';
 
-export const guessShape = (a: Pick<Article, 'name' | 'tpl'>): Shape => {
-  const tpl = TEMPLATES.find((t) => t.id === a.tpl);
-  if (tpl) return tpl.shape;
+export const guessShape = (a: Pick<Article, 'name' | 'tpl' | 'shape'>): Shape => {
+  if (a.shape) return a.shape;
+  if (a.tpl && TPL_SHAPE[a.tpl]) return TPL_SHAPE[a.tpl];
   const n = (a.name || '').toLowerCase();
   if (/lessive|javel|vaisselle|liquide|savon|nettoyant/.test(n)) return 'flacon';
   if (/huile|sirop|vin|vinaigre|bouteille/.test(n)) return 'bouteille';
@@ -38,3 +38,16 @@ export const shapeUrl = (shape: Shape, fill: string) => {
   }
   return cache[k];
 };
+
+export const fitBox = (w: number, h: number, box: number) => {
+  const s = box / Math.max(w || 1, h || 1);
+  return { tw: Math.max(4, Math.round((w || 1) * s)), th: Math.max(4, Math.round((h || 1) * s)) };
+};
+
+export const EXTRUDE = 'drop-shadow(2px -2px 0 rgba(0,0,0,.26)) drop-shadow(2px -2px 0 rgba(0,0,0,.18)) drop-shadow(2px -2px 0 rgba(0,0,0,.12))';
+
+/** Rouge → vert selon t ∈ [0,1]. */
+export const pc = (t: number, l = 0.85, c = 0.12) => `oklch(${l} ${c} ${Math.round(25 + Math.max(0, Math.min(1, t)) * 120)})`;
+
+export const stripes = (px: number) =>
+  px > 3 ? `repeating-linear-gradient(90deg, transparent 0 ${px - 1.5}px, color-mix(in srgb, #201e1d 50%, transparent) ${px - 1.5}px ${px}px)` : 'none';

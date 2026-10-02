@@ -13,10 +13,12 @@ export interface Article {
   buy: number;
   sell: number;
   sales: number;
+  shape: Shape | null;
+  img: string | null;
 }
 
-export interface Template { id: string; name: string; w: number; h: number; d: number; shape: Shape }
-export interface Level { id: string; h: number }
+export interface Template { id: string; name: string; w: number; h: number; d: number }
+export interface Level { id: string; h: number; zone: Zone | null }
 export interface Placement { uid: string; aid: string; f: number }
 export interface Shelf {
   id: string;
@@ -30,12 +32,24 @@ export interface Shelf {
 export type AlertKind = 'nocat' | 'hmax' | 'sat' | 'haut' | 'hors' | 'expo' | 'place';
 export interface Alert { kind: AlertKind; sev: 1 | 2; title: string; detail: string; uid?: string; aid?: string }
 
+export interface ComputedItem extends Placement { a: Article; wcm: number; t: number }
 export interface ComputedLevel extends Level {
   num: number;
   y0: number;
+  auto: Zone;
   zone: Zone;
-  items: (Placement & { a: Article; wcm: number; t: number })[];
+  items: ComputedItem[];
   used: number;
   sat: boolean;
 }
-export interface ComputedShelf { levels: ComputedLevel[]; totalH: number; unplaced: Article[]; alerts: Alert[] }
+export interface ComputedShelf {
+  levels: ComputedLevel[];
+  totalH: number;
+  unplaced: Article[];
+  alerts: Alert[];
+  match: number;
+  fill: number;
+  pen: number;
+  score: number;
+  tOf: (a: Article) => number;
+}

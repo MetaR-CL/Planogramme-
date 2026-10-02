@@ -1,7 +1,7 @@
 import type { Article, CategoryId, Level, Placement, Shelf } from './types';
 
 const A = (id: string, name: string, cat: CategoryId, tpl: string | null, w: number, h: number, d: number, buy: number, sell: number, sales: number): Article =>
-  ({ id, name, cat, tpl, w, h, d, buy, sell, sales });
+  ({ id, name, cat, tpl, w, h, d, buy, sell, sales, shape: null, img: null });
 
 export const seedArticles = (): Article[] => [
   A('a1', 'Coca-Cola 33 cl', 'boissons', 'canette', 6.6, 11.5, 6.6, 0.42, 0.95, 48),
@@ -35,7 +35,7 @@ export const seedArticles = (): Article[] => [
 
 let n = 0;
 const P = (aid: string, f: number): Placement => ({ uid: 'seed' + ++n, aid, f });
-const L = (id: string, h: number): Level => ({ id, h });
+const L = (id: string, h: number): Level => ({ id, h, zone: null });
 
 export const seedShelves = (): Shelf[] => [
   {
