@@ -7,7 +7,7 @@ import { Stepper } from '../components/Stepper';
 import { Thumb } from '../components/ProductBlock';
 
 const parse = (s: string) => { const v = parseFloat(String(s).replace(',', '.').replace(/\s/g, '')); return isNaN(v) ? 0 : v; };
-const str = (n: number) => String(n).replace('.', ',');
+const str = (n: number | string) => String(n).replace('.', ',');
 const eur = (n: number) => n.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' });
 
 export function ArticleForm() {
