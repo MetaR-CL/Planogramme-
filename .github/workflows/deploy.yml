@@ -2,7 +2,7 @@ name: Déploiement GitHub Pages
 
 on:
   push:
-    branches: [main]
+    branches: [main, claude/wizardly-cannon-el2azk]
   workflow_dispatch:
 
 permissions:
