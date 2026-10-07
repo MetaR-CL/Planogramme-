@@ -126,12 +126,12 @@ small { font-size: 13px; color: var(--color-neutral-700); font-weight: 400; }
 
 /* 03 étagères */
 .shelf-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; margin-bottom: 32px; }
-.shelf-card { display: flex; gap: 16px; padding: 16px; background: var(--color-surface); border: 3px solid transparent; cursor: pointer; }
+.shelf-card { display: flex; gap: 16px; min-width: 0; overflow: hidden; padding: 16px; background: var(--color-surface); border: 3px solid transparent; cursor: pointer; }
 .shelf-card.on { border-color: var(--color-accent); }
 .shelf-card-info { display: flex; flex-direction: column; gap: 4px; min-width: 0; flex: 1; }
-.shelf-card-info .btn { justify-content: flex-start; margin-top: 8px; }
+.shelf-card-info .btn { justify-content: flex-start; margin-top: 8px; white-space: nowrap; padding-inline: 12px; }
 .mini { display: flex; flex-direction: column; border: 2px solid var(--color-text); border-bottom-width: 6px; flex: none; align-self: flex-start; }
-.mini-level { display: flex; align-items: flex-end; border-bottom: 2px solid var(--color-text); }
+.mini-level { display: flex; align-items: flex-end; border-bottom: 2px solid var(--color-text); overflow: hidden; box-sizing: content-box; }
 .mini-level i { display: block; flex: none; }
 .settings-grid { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(280px, 1fr); gap: 32px; align-items: start; }
 .settings-grid section { border-top: 2px solid var(--color-divider); padding: 16px 0; }
@@ -142,7 +142,7 @@ small { font-size: 13px; color: var(--color-neutral-700); font-weight: 400; }
 .segm.zones .segm-opt { flex: 1; min-height: 44px; padding: 0 10px; }
 .gauge-bar { height: 10px; background: var(--color-neutral-200); margin: 8px 0; }
 .gauge-bar i { display: block; height: 100%; }
-.cfg-preview { position: sticky; top: 88px; }
+.cfg-preview { min-width: 0; overflow-x: auto; padding-bottom: 16px; }
 .cfg-shelf { border-left: 6px solid var(--color-text); border-right: 6px solid var(--color-text); }
 .cfg-level-box { border-bottom: 6px solid var(--color-text); padding: 4px 6px; box-sizing: content-box; }
 .socle { background: var(--color-text); color: #fff; height: 36px; padding: 8px; font-size: 13px; }
