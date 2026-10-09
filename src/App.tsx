@@ -6,6 +6,8 @@ import { ShelvesScreen } from './screens/ShelvesScreen';
 import { PlanogramScreen } from './screens/PlanogramScreen';
 import { PrintScreen } from './screens/PrintScreen';
 import { useDevice } from './hooks';
+import { useEffect, useState } from 'react';
+import { ProjectTools } from './components/ProjectTools';
 
 const TABS: { id: Screen; n: string; label: string; Icon: typeof List }[] = [
   { id: 'articles', n: '01', label: 'Articles', Icon: List },
@@ -15,6 +17,12 @@ const TABS: { id: Screen; n: string; label: string; Icon: typeof List }[] = [
 ];
 
 export function App() {
+  const [hydrated, setHydrated] = useState(useStore.persist.hasHydrated());
+  useEffect(() => {
+    const off = useStore.persist.onFinishHydration(() => setHydrated(true));
+    setHydrated(useStore.persist.hasHydrated());
+    return off;
+  }, []);
   const screen = useStore((s) => s.screen);
   const go = useStore((s) => s.go);
   const editing = useStore((s) => s.editing);
@@ -31,7 +39,12 @@ export function App() {
         {!phone && (
           <nav className="tabs" aria-label="Navigation">
             {TABS.map(({ id, n, label }) => (
-              <button key={id} className="tab" aria-current={current === id ? 'page' : undefined} onClick={() => go(id)}>
+              <button
+                key={id}
+                className="tab"
+                aria-current={current === id ? 'page' : undefined}
+                onClick={() => go(id)}
+              >
                 <small>{n}</small> {label}
               </button>
             ))}
@@ -39,12 +52,33 @@ export function App() {
         )}
       </header>
       <main className="main">
-        {screen === 'form' ? <ArticleForm key={editing?.id ?? 'new'} /> : screen === 'articles' ? <ArticlesScreen /> : screen === 'shelves' ? <ShelvesScreen /> : screen === 'planogram' ? <PlanogramScreen /> : <PrintScreen />}
+        {!hydrated ? (
+          <p role="status">Chargement de votre projet…</p>
+        ) : (
+          <>
+            <ProjectTools />
+            {screen === 'form' ? (
+              <ArticleForm key={editing?.id ?? 'new'} />
+            ) : screen === 'articles' ? (
+              <ArticlesScreen />
+            ) : screen === 'shelves' ? (
+              <ShelvesScreen />
+            ) : screen === 'planogram' ? (
+              <PlanogramScreen />
+            ) : (
+              <PrintScreen />
+            )}
+          </>
+        )}
       </main>
       {phone && (
         <nav className="bottom-nav no-print" aria-label="Navigation">
           {TABS.map(({ id, label, Icon }) => (
-            <button key={id} aria-current={current === id ? 'page' : undefined} onClick={() => go(id)}>
+            <button
+              key={id}
+              aria-current={current === id ? 'page' : undefined}
+              onClick={() => go(id)}
+            >
               <Icon size={22} aria-hidden />
               <span>{label}</span>
             </button>
